@@ -52,5 +52,6 @@ func main() {
 
 func setupRoutes(app *fiber.App, ordersHandler *handlers.OrdersHandler) {
 	app.Post("/orders", ordersHandler.CreateOrder)
-	app.Get("/orders/:id", ordersHandler.GetOrder)
+	app.Get("/orders/:order_id", ordersHandler.GetOrder)
+	app.Get("/orders", ordersHandler.GetAllOrders)
 }

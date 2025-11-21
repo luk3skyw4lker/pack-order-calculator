@@ -12,6 +12,7 @@ import (
 	"github.com/luk3skyw4lker/order-pack-calculator/src/payload"
 )
 
+// Default pack sizes used for orders
 var defaultPackSizes = []int{250, 500, 1000, 2000, 5000}
 
 type PackCombinationResult struct {
@@ -45,7 +46,16 @@ func NewOrdersService(repo OrdersRepository, packSizes ...int) *OrdersService {
 }
 
 func (s *OrdersService) GetAllOrders() ([]models.Order, error) {
-	return s.repo.GetAllOrders()
+	orders, err := s.repo.GetAllOrders()
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) || errors.Is(err, pgx.ErrNoRows) {
+			return []models.Order{}, payload.ErrOrderNotFound
+		}
+
+		return []models.Order{}, err
+	}
+
+	return orders, nil
 }
 
 func (s *OrdersService) GetOrder(orderID uuid.UUID) (models.Order, error) {

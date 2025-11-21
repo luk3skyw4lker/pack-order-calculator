@@ -95,6 +95,7 @@ func (h *OrdersHandler) GetOrder(ctx fiber.Ctx) error {
 //	@Accept			json
 //	@Produces		json
 //	@Success		200	{array}		models.Order
+//	@Failure		404	{object}	payload.ErrorResponse
 //	@Failure		500	{object}	payload.ErrorResponse
 //	@Router			/orders [get]
 func (h *OrdersHandler) GetAllOrders(ctx fiber.Ctx) error {

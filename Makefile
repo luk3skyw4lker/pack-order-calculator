@@ -55,3 +55,11 @@ generate_docs:
 
 fmt_docs:
 	swag fmt
+
+cycle_containers: down_containers up_containers
+
+down_containers:
+	docker-compose down
+
+up_containers:
+	docker-compose up --build -d

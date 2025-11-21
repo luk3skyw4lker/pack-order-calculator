@@ -29,3 +29,18 @@ The available pack sizes are:
 - PostgreSQL for database management
 - Goose for database migrations
 - Swagger for API documentation
+
+## How to run
+
+1. Clone the repository:
+   ```bash
+   git clone github.com/luk3skyw4lker/gymshark-challenge-backend
+   cd gymshark-challenge-backend
+   ```
+
+2. Start the Docker containers:
+   ```bash
+   make up_containers
+   ``` 
+
+3. Use the API endpoints to create orders and manage pack sizes. Refer to the Swagger documentation for detailed API usage.

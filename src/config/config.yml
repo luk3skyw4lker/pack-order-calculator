@@ -5,3 +5,5 @@ database:
   password: postgres
   db_name: orders_db
   ssl_mode: disable
+fiber:
+  port: 3000

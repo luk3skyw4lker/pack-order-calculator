@@ -17,6 +17,33 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - orders_network
+
+  orders_api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: orders_api
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD: postgres
+      DATABASE_NAME: orders_db
+      DATABASE_SSL_MODE: disable
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - orders_network
+    restart: unless-stopped
 
 volumes:
   postgres_data:
+
+networks:
+  orders_network:
+    driver: bridge

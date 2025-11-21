@@ -9,6 +9,11 @@ type DatabaseConfig struct {
 	SSLMode  string `env:"DATABASE_SSL_MODE" yaml:"ssl_mode" validate:"oneof=disable allow prefer require verify-ca verify-full"`
 }
 
+type FiberConfig struct {
+	Port int `env:"FIBER_PORT" yaml:"port" validate:"gt=0,lte=65535"`
+}
+
 type Config struct {
 	Database DatabaseConfig `yaml:"database"`
+	Fiber    FiberConfig    `yaml:"fiber"`
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/gofiber/fiber/v3"
@@ -45,7 +46,7 @@ func main() {
 
 	setupRoutes(app, ordersHandler)
 
-	if err := app.Listen(":3000"); err != nil {
+	if err := app.Listen(fmt.Sprintf(":%d", cfg.Fiber.Port)); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
 }

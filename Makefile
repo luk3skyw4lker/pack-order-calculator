@@ -1,6 +1,6 @@
-export GOOSE_MIGRATION_DIR ?= ./database/migrations
+export GOOSE_MIGRATION_DIR ?= ./src/database/migrations
 export GOOSE_DRIVER ?= postgres
-export GOOSE_DBSTRING ?= host=localhost port=5432 user=postgres password=postgres dbname=userapi sslmode=disable
+export GOOSE_DBSTRING ?= host=localhost port=5432 user=postgres password=postgres dbname=orders_db sslmode=disable
 
 .SILENT:
 
@@ -51,7 +51,7 @@ test:
 	go test ./internal/... -race -coverprofile=fmt.coverage
 
 generate_docs:
-	swag init --parseDependency
+	cd src/ && swag init --parseDependency && cd ..
 
 fmt_docs:
 	swag fmt

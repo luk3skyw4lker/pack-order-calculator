@@ -6,4 +6,4 @@ database:
   db_name: orders_db
   ssl_mode: disable
 fiber:
-  port: 3000
+  port: 3001

@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/middleware/logger"
 
 	"github.com/luk3skyw4lker/order-pack-calculator/src/config"
 	"github.com/luk3skyw4lker/order-pack-calculator/src/database"
@@ -32,6 +33,8 @@ func main() {
 	}
 
 	app := fiber.New()
+
+	app.Use(logger.New())
 
 	utils.InitDocs(app)
 

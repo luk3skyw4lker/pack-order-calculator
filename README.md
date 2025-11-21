@@ -20,3 +20,12 @@ The available pack sizes are:
 - Only whole packs can't be sent, no packs can be broken open
 - The calculator yields the least amount of items to fullfil the order
 - The calculator yields the least amount of packs to fullfil the order
+
+## Tools
+
+- Go programming language
+- Fiber web framework for building the API
+- Docker for containerization
+- PostgreSQL for database management
+- Goose for database migrations
+- Swagger for API documentation

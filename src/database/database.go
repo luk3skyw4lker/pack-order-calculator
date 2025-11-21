@@ -50,12 +50,12 @@ func (c *Database) scanValue(rows pgx.Rows, dest interface{}) error {
 	}
 }
 
-func (db *Database) QueryWithScan(query string, dest interface{}) error {
+func (db *Database) QueryWithScan(query string, dest interface{}, args ...any) error {
 	if reflect.ValueOf(dest).Kind() != reflect.Ptr {
 		return errors.New("destination should be pointer or else changes won't reflect on it")
 	}
 
-	rows, err := db.connection.Query(context.Background(), query)
+	rows, err := db.connection.Query(context.Background(), query, args...)
 	if err != nil {
 		return err
 	}

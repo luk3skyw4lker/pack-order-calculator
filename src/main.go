@@ -6,7 +6,11 @@ import (
 	"github.com/gofiber/fiber/v3"
 
 	"github.com/luk3skyw4lker/order-pack-calculator/src/config"
+	"github.com/luk3skyw4lker/order-pack-calculator/src/database"
 	_ "github.com/luk3skyw4lker/order-pack-calculator/src/docs"
+	"github.com/luk3skyw4lker/order-pack-calculator/src/internal/handlers"
+	"github.com/luk3skyw4lker/order-pack-calculator/src/internal/repositories"
+	"github.com/luk3skyw4lker/order-pack-calculator/src/internal/services"
 	"github.com/luk3skyw4lker/order-pack-calculator/src/utils"
 )
 
@@ -30,7 +34,23 @@ func main() {
 
 	utils.InitDocs(app)
 
+	database, err := database.NewDatabase(cfg.Database)
+	if err != nil {
+		log.Fatalf("Failed to connect to database: %v", err)
+	}
+
+	ordersRepo := repositories.NewOrdersRepository(database)
+	ordersService := services.NewOrdersService(ordersRepo)
+	ordersHandler := handlers.NewOrdersHandler(ordersService)
+
+	setupRoutes(app, ordersHandler)
+
 	if err := app.Listen(":3000"); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
+}
+
+func setupRoutes(app *fiber.App, ordersHandler *handlers.OrdersHandler) {
+	app.Post("/orders", ordersHandler.CreateOrder)
+	app.Get("/orders/:id", ordersHandler.GetOrder)
 }

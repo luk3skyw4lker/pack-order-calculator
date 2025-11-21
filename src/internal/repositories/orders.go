@@ -26,16 +26,21 @@ func (r *OrdersRepository) queryWithScan(query string, args ...any) (models.Orde
 	return dest, nil
 }
 
-func (r *OrdersRepository) GetAllOrders() (models.Order, error) {
+func (r *OrdersRepository) GetAllOrders() ([]models.Order, error) {
 	query := "SELECT * FROM orders"
 
-	return r.queryWithScan(query)
+	var dest []models.Order
+	if err := r.db.QueryWithScan(query, &dest); err != nil {
+		return nil, err
+	}
+
+	return dest, nil
 }
 
 func (r *OrdersRepository) SaveOrder(order models.Order) (models.Order, error) {
-	query := "INSERT INTO orders (id, items_count, packs_count) VALUES ($1, $2, $3) RETURNING *"
+	query := "INSERT INTO orders (id, items_count, pack_setup) VALUES ($1, $2, $3) RETURNING *"
 
-	return r.queryWithScan(query, order.ID, order.ItemsCount, order.PackCount)
+	return r.queryWithScan(query, order.ID, order.ItemsCount, order.PackSetup)
 }
 
 func (r *OrdersRepository) FetchOrder(orderID string) (models.Order, error) {

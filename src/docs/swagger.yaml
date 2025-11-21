@@ -1,4 +1,26 @@
 basePath: /
+definitions:
+  models.Order:
+    properties:
+      id:
+        type: string
+      items_count:
+        type: integer
+      pack_setup:
+        type: string
+    type: object
+  payload.CreateOrder:
+    properties:
+      items_count:
+        type: integer
+    required:
+    - items_count
+    type: object
+  payload.ErrorResponse:
+    properties:
+      message:
+        type: string
+    type: object
 host: orders-calculation.luk3skyw4lker.com
 info:
   contact:
@@ -11,5 +33,64 @@ info:
   termsOfService: http://swagger.io/terms/
   title: Orders Calculation API
   version: "1.0"
-paths: {}
+paths:
+  /orders:
+    post:
+      consumes:
+      - application/json
+      description: Create an order with the specified number of items
+      parameters:
+      - description: the order to be created
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/payload.CreateOrder'
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Order'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/payload.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/payload.ErrorResponse'
+      summary: Create an order
+      tags:
+      - Orders
+  /orders/{order_id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve the details of an order using its ID
+      parameters:
+      - description: The ID of the order to retrieve
+        in: path
+        name: order_id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Order'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/payload.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/payload.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/payload.ErrorResponse'
+      summary: Get an order by ID
+      tags:
+      - Orders
 swagger: "2.0"

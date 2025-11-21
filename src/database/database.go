@@ -9,19 +9,15 @@ import (
 	"github.com/georgysavva/scany/v2/pgxscan"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/luk3skyw4lker/order-pack-calculator/src/config"
 )
 
 type Database struct {
-	Host       string
-	Port       int
-	User       string
-	Password   string
-	Name       string
 	connection *pgxpool.Pool
 }
 
-func NewDatabase(host string, port int, user, password, name string) *Database {
-	dsn := fmt.Sprintf("postgresql://%s:%s@%s:%d/%s", user, password, host, port, name)
+func NewDatabase(cfg config.DatabaseConfig) (*Database, error) {
+	dsn := fmt.Sprintf("postgresql://%s:%s@%s:%d/%s", cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.Name)
 	fmt.Println("Database DSN:", dsn) // For demonstration purposes
 
 	connection, err := pgxpool.New(context.Background(), dsn)
@@ -30,13 +26,8 @@ func NewDatabase(host string, port int, user, password, name string) *Database {
 	}
 
 	return &Database{
-		Host:       host,
-		Port:       port,
-		User:       user,
-		Password:   password,
-		Name:       name,
 		connection: connection,
-	}
+	}, err
 }
 
 func (c *Database) scanValue(rows pgx.Rows, dest interface{}) error {

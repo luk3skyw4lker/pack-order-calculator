@@ -1,0 +1,15 @@
+basePath: /
+host: orders-calculation.luk3skyw4lker.com
+info:
+  contact:
+    email: lucashenriqueblemos@gmail.com
+    name: Lucas Lemos
+  description: This is a server for calculating order pack breakdowns.
+  license:
+    name: MIT
+    url: https://mit-license.org/
+  termsOfService: http://swagger.io/terms/
+  title: Orders Calculation API
+  version: "1.0"
+paths: {}
+swagger: "2.0"

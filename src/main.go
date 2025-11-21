@@ -7,6 +7,7 @@ import (
 
 	"github.com/luk3skyw4lker/order-pack-calculator/src/config"
 	_ "github.com/luk3skyw4lker/order-pack-calculator/src/docs"
+	"github.com/luk3skyw4lker/order-pack-calculator/src/utils"
 )
 
 // @title Orders Calculation API
@@ -26,6 +27,8 @@ func main() {
 	}
 
 	app := fiber.New()
+
+	utils.InitDocs(app)
 
 	if err := app.Listen(":3000"); err != nil {
 		log.Fatalf("Failed to start server: %v", err)

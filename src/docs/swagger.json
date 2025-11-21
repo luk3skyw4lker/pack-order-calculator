@@ -1,0 +1,20 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is a server for calculating order pack breakdowns.",
+        "title": "Orders Calculation API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "Lucas Lemos",
+            "email": "lucashenriqueblemos@gmail.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://mit-license.org/"
+        },
+        "version": "1.0"
+    },
+    "host": "orders-calculation.luk3skyw4lker.com",
+    "basePath": "/",
+    "paths": {}
+}

@@ -4,8 +4,11 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
+	"github.com/luk3skyw4lker/order-pack-calculator/src/database/models"
 	"github.com/luk3skyw4lker/order-pack-calculator/src/mocks/repositories"
 )
+
+var defaultPackSizes = []int{250, 500, 1000, 2000, 5000}
 
 func TestOrdersService_CreateOrder(t *testing.T) {
 	testCases := []struct {
@@ -70,7 +73,10 @@ func TestOrdersService_CreateOrder(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			repo := repositories.NewInMemoryOrdersRepository()
-			service := NewOrdersService(repo)
+			packSizesRepo := setupPackSizesRepositoryWithDefaults()
+			defer packSizesRepo.Clear()
+
+			service := NewOrdersService(repo, packSizesRepo)
 
 			order, err := service.CreateOrder(tc.itemsCount)
 			if err != nil {
@@ -124,7 +130,10 @@ func TestOrdersService_CreateOrder(t *testing.T) {
 
 func TestOrdersService_GetAllOrders(t *testing.T) {
 	repo := repositories.NewInMemoryOrdersRepository()
-	service := NewOrdersService(repo)
+	packSizesRepo := setupPackSizesRepositoryWithDefaults()
+	defer packSizesRepo.Clear()
+
+	service := NewOrdersService(repo, packSizesRepo)
 
 	// Initially should be empty
 	orders, err := service.GetAllOrders()
@@ -156,7 +165,9 @@ func TestOrdersService_GetAllOrders(t *testing.T) {
 
 func TestOrdersService_GetOrder(t *testing.T) {
 	repo := repositories.NewInMemoryOrdersRepository()
-	service := NewOrdersService(repo)
+	packSizesRepo := setupPackSizesRepositoryWithDefaults()
+	defer packSizesRepo.Clear()
+	service := NewOrdersService(repo, packSizesRepo)
 
 	// Create an order
 	createdOrder, err := service.CreateOrder(500)
@@ -271,4 +282,17 @@ func TestCalculatePackCombination(t *testing.T) {
 			}
 		})
 	}
+}
+
+func setupPackSizesRepositoryWithDefaults() *repositories.InMemoryPackSizesRepository {
+	repo := repositories.NewInMemoryPackSizesRepository()
+	defaultPackSizes := []int{250, 500, 1000, 2000, 5000}
+	for _, size := range defaultPackSizes {
+		_, _ = repo.CreatePackSize(models.PackSize{
+			ID:   uuid.New(),
+			Size: size,
+		})
+	}
+
+	return repo
 }

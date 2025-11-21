@@ -12,9 +12,6 @@ import (
 	"github.com/luk3skyw4lker/order-pack-calculator/src/payload"
 )
 
-// Default pack sizes used for orders
-var defaultPackSizes = []int{250, 500, 1000, 2000, 5000}
-
 type PackCombinationResult struct {
 	Packs      map[int]int // key: number of packs, value: pack size
 	TotalPacks int
@@ -27,26 +24,21 @@ type OrdersRepository interface {
 }
 
 type OrdersService struct {
-	repo      OrdersRepository
-	packSizes []int
+	ordersRepository OrdersRepository
+	packSizesRepo    PackSizeRepository
 }
 
-func NewOrdersService(repo OrdersRepository, packSizes ...int) *OrdersService {
+func NewOrdersService(ordersRepository OrdersRepository, packSizesRepo PackSizeRepository) *OrdersService {
 	ordersService := &OrdersService{
-		repo: repo,
-	}
-
-	if len(packSizes) == 0 {
-		ordersService.packSizes = defaultPackSizes
-	} else {
-		ordersService.packSizes = packSizes
+		ordersRepository: ordersRepository,
+		packSizesRepo:    packSizesRepo,
 	}
 
 	return ordersService
 }
 
 func (s *OrdersService) GetAllOrders() ([]models.Order, error) {
-	orders, err := s.repo.GetAllOrders()
+	orders, err := s.ordersRepository.GetAllOrders()
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) || errors.Is(err, pgx.ErrNoRows) {
 			return []models.Order{}, payload.ErrOrderNotFound
@@ -59,7 +51,7 @@ func (s *OrdersService) GetAllOrders() ([]models.Order, error) {
 }
 
 func (s *OrdersService) GetOrder(orderID uuid.UUID) (models.Order, error) {
-	order, err := s.repo.FetchOrder(orderID.String())
+	order, err := s.ordersRepository.FetchOrder(orderID.String())
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) || errors.Is(err, pgx.ErrNoRows) {
 			return models.Order{}, payload.ErrOrderNotFound
@@ -72,7 +64,12 @@ func (s *OrdersService) GetOrder(orderID uuid.UUID) (models.Order, error) {
 }
 
 func (s *OrdersService) CreateOrder(itemsCount int) (models.Order, error) {
-	combination := calculatePackCombination(itemsCount, s.packSizes)
+	packSizes, err := s.packSizesRepo.GetAllPackSizes()
+	if err != nil {
+		return models.Order{}, err
+	}
+
+	combination := calculatePackCombination(itemsCount, formatPackSizes(packSizes))
 
 	order := models.Order{
 		ID:         uuid.New(),
@@ -80,7 +77,16 @@ func (s *OrdersService) CreateOrder(itemsCount int) (models.Order, error) {
 		PackSetup:  formatPackSetup(combination.Packs),
 	}
 
-	return s.repo.SaveOrder(order)
+	return s.ordersRepository.SaveOrder(order)
+}
+
+func formatPackSizes(packSizes []models.PackSize) []int {
+	sizes := make([]int, len(packSizes))
+	for i, ps := range packSizes {
+		sizes[i] = ps.Size
+	}
+
+	return sizes
 }
 
 // We save the pack setup as a formatted string like "2x500, 1x1000"

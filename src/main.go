@@ -41,18 +41,27 @@ func main() {
 	}
 
 	ordersRepo := repositories.NewOrdersRepository(database)
-	ordersService := services.NewOrdersService(ordersRepo)
+	packSizesRepo := repositories.NewPackSizesRepository(database)
+
+	ordersService := services.NewOrdersService(ordersRepo, packSizesRepo)
 	ordersHandler := handlers.NewOrdersHandler(ordersService)
 
-	setupRoutes(app, ordersHandler)
+	packSizesService := services.NewPackSizesService(packSizesRepo)
+	packSizesHandler := handlers.NewPackSizesHandler(packSizesService)
+
+	setupRoutes(app, ordersHandler, packSizesHandler)
 
 	if err := app.Listen(fmt.Sprintf(":%d", cfg.Fiber.Port)); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
 }
 
-func setupRoutes(app *fiber.App, ordersHandler *handlers.OrdersHandler) {
+func setupRoutes(app *fiber.App, ordersHandler *handlers.OrdersHandler, packSizesHandler *handlers.PackSizesHandler) {
 	app.Post("/orders", ordersHandler.CreateOrder)
 	app.Get("/orders/:order_id", ordersHandler.GetOrder)
 	app.Get("/orders", ordersHandler.GetAllOrders)
+
+	app.Post("/pack-sizes", packSizesHandler.CreatePackSize)
+	app.Get("/pack-sizes", packSizesHandler.GetAllPackSizes)
+	app.Put("/pack-sizes/:pack_size_id", packSizesHandler.UpdatePackSize)
 }

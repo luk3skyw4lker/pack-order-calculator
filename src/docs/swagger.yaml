@@ -9,6 +9,13 @@ definitions:
       pack_setup:
         type: string
     type: object
+  models.PackSize:
+    properties:
+      id:
+        type: string
+      size:
+        type: integer
+    type: object
   payload.CreateOrder:
     properties:
       items_count:
@@ -16,10 +23,27 @@ definitions:
     required:
     - items_count
     type: object
+  payload.CreatePackSize:
+    properties:
+      size:
+        type: integer
+    required:
+    - size
+    type: object
   payload.ErrorResponse:
     properties:
       message:
         type: string
+    type: object
+  payload.UpdatePackSize:
+    properties:
+      id:
+        type: string
+      size:
+        type: integer
+    required:
+    - id
+    - size
     type: object
 host: orders-calculation.luk3skyw4lker.com
 info:
@@ -115,4 +139,89 @@ paths:
       summary: Get an order by ID
       tags:
       - Orders
+  /pack-sizes:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of all available pack sizes
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.PackSize'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/payload.ErrorResponse'
+      summary: Get all pack sizes
+      tags:
+      - PackSizes
+    post:
+      consumes:
+      - application/json
+      description: Add a new pack size to the system
+      parameters:
+      - description: The pack size to create
+        in: body
+        name: packSize
+        required: true
+        schema:
+          $ref: '#/definitions/payload.CreatePackSize'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.PackSize'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/payload.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/payload.ErrorResponse'
+      summary: Create a new pack size
+      tags:
+      - PackSizes
+  /pack-sizes/{pack_size_id}:
+    put:
+      consumes:
+      - application/json
+      description: Update the size of an existing pack size
+      parameters:
+      - description: The ID of the pack size to update
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: The updated pack size data
+        in: body
+        name: packSize
+        required: true
+        schema:
+          $ref: '#/definitions/payload.UpdatePackSize'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.PackSize'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/payload.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/payload.ErrorResponse'
+      summary: Update an existing pack size
+      tags:
+      - PackSizes
 swagger: "2.0"

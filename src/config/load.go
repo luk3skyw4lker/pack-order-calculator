@@ -10,7 +10,7 @@ import (
 	"github.com/ilyakaznacheev/cleanenv"
 )
 
-const defaultFilePath = "./config/config.yml"
+const defaultFilePath = "./src/config/config.yml"
 
 func LoadConfig(cfg interface{}) error {
 	filePath := flag.String("config-file", defaultFilePath, "The config file to be used")

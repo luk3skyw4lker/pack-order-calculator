@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/middleware/cors"
 	"github.com/gofiber/fiber/v3/middleware/logger"
 
 	"github.com/luk3skyw4lker/order-pack-calculator/src/config"
@@ -35,6 +36,7 @@ func main() {
 	app := fiber.New()
 
 	app.Use(logger.New())
+	app.Use(cors.New())
 
 	utils.InitDocs(app)
 
@@ -47,9 +49,9 @@ func main() {
 	packSizesRepo := repositories.NewPackSizesRepository(database)
 
 	ordersService := services.NewOrdersService(ordersRepo, packSizesRepo)
-	ordersHandler := handlers.NewOrdersHandler(ordersService)
-
 	packSizesService := services.NewPackSizesService(packSizesRepo)
+
+	ordersHandler := handlers.NewOrdersHandler(ordersService)
 	packSizesHandler := handlers.NewPackSizesHandler(packSizesService)
 
 	setupRoutes(app, ordersHandler, packSizesHandler)

@@ -35,7 +35,7 @@ func NewOrdersService(repo OrdersRepository, packSizes ...int) *OrdersService {
 		repo: repo,
 	}
 
-	if packSizes == nil || len(packSizes) == 0 {
+	if len(packSizes) == 0 {
 		ordersService.packSizes = defaultPackSizes
 	} else {
 		ordersService.packSizes = packSizes

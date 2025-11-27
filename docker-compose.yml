@@ -24,7 +24,7 @@ services:
       dockerfile: Dockerfile
     container_name: orders_api
     ports:
-      - "3000:3000"
+      - "3001:3001"
     environment:
       DATABASE_HOST: postgres
       DATABASE_PORT: 5432

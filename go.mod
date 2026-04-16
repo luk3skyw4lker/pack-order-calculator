@@ -9,7 +9,7 @@ require (
 	github.com/gofiber/swagger/v2 v2.0.0-20251031122725-30bc194ed26e
 	github.com/google/uuid v1.6.0
 	github.com/ilyakaznacheev/cleanenv v1.5.0
-	github.com/jackc/pgx/v5 v5.7.6
+	github.com/jackc/pgx/v5 v5.9.0
 	github.com/swaggo/swag v1.16.6
 )
 
